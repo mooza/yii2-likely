@@ -11,6 +11,7 @@ namespace mooza\likely;
 
 use Yii;
 use yii\base\Widget;
+use yii\helpers\Url;
 
 /** The Ilya Birman's Likely widget is a wrapper for the Likely Plugin designed by Ilya Birman.
  * This plugin is a simple and beautiful created for adding social sharing buttons that aren’t shabby.
@@ -85,10 +86,14 @@ class Likely extends Widget
             } else {
                 $this->options['url'] = 'data-url="' . $this->pluginOptions['url'] . '"';
             }
+        } else {
+            $this->options['url'] = '';
         }
 
         if (array_key_exists('title', $this->pluginOptions) && $this->pluginOptions['title'] != '') {
             $this->options['title'] = 'data-title="' . $this->pluginOptions['title'] . '"';
+        } else {
+            $this->options['title'] = '';
         }
 
         if (array_key_exists('colorClass', $this->pluginOptions) && $this->pluginOptions['colorClass'] != '') {
@@ -97,6 +102,8 @@ class Likely extends Widget
             } else {
                 $this->addError('colorClass');
             }
+        } else {
+            $this->options['colorClass'] = '';
         }
 
         if (array_key_exists('sizeClass', $this->pluginOptions) && $this->pluginOptions['sizeClass'] != '') {
@@ -107,6 +114,8 @@ class Likely extends Widget
             } else {
                 $this->addError('sizeClass');
             }
+        } else {
+            $this->options['sizeClass'] = '';
         }
 
         if (array_key_exists('items', $this->pluginOptions)) {
@@ -121,17 +130,20 @@ class Likely extends Widget
                                 $this->options['items'][$i]['title'] = $this->getSocialNetworksList()[$item['class']];
                             }
 
-                            if ($item['class'] == 'twitter' && $item['via'] != '') {
+                            if ($item['class'] == 'twitter' && array_key_exists('via', $item) && $item['via'] != '') {
                                 $this->options['items'][$i]['via'] = 'data-via="' . $item['via'] . '"';
-
+                            } else {
+                                $this->options['items'][$i]['via'] = '';
                             }
 
-                            if ($item['class'] == 'facebook' && $item['imagePath'] != '') {
+                            if ($item['class'] == 'facebook' && array_key_exists('imagePath', $item) && $item['imagePath'] != '') {
                                 $this->registerFacebookImageMeta($item['imagePath'], $i);
                             }
 
-                            if ($item['class'] == 'telegram' && $item['text'] != '') {
+                            if ($item['class'] == 'telegram' && array_key_exists('text', $item) && $item['text'] != '') {
                                 $this->options['items'][$i]['text'] = 'data-text="' . $item['text'] . '"';
+                            } else {
+                                $this->options['items'][$i]['text'] = '';
                             }
 
                             if ($item['class'] == 'pinterest' && $item['media'] != '') {
@@ -140,6 +152,8 @@ class Likely extends Widget
                                 } else {
                                     $this->addError('items', $i, 'media');
                                 }
+                            } else {
+                                $this->options['items'][$i]['media'] = '';
                             }
                         } else {
                             $this->addError('items', $i, 'class');
@@ -156,34 +170,58 @@ class Likely extends Widget
                 [
                     'class' => 'twitter',
                     'title' => 'Tweet',
+                    'text' => '',
+                    'media' => '',
                     'via' => '',
+                    'image' => '',
                 ],
                 [
                     'class' => 'facebook',
                     'title' => 'Share',
+                    'text' => '',
+                    'media' => '',
+                    'via' => '',
                     'image' => '',
                 ],
                 [
                     'class' => 'gplus',
                     'title' => 'Share',
+                    'text' => '',
+                    'media' => '',
+                    'via' => '',
+                    'image' => '',
                 ],
                 [
                     'class' => 'vkontakte',
                     'title' => 'Поделиться',
+                    'text' => '',
+                    'media' => '',
+                    'via' => '',
+                    'image' => '',
                 ],
                 [
                     'class' => 'telegram',
                     'title' => 'Send',
                     'text' => '',
+                    'media' => '',
+                    'via' => '',
+                    'image' => '',
                 ],
                 [
                     'class' => 'odnoklasskini',
                     'title' => 'Класснуть',
+                    'text' => '',
+                    'media' => '',
+                    'via' => '',
+                    'image' => '',
                 ],
                 [
                     'class' => 'pinterest',
                     'title' => 'Pin',
+                    'text' => '',
                     'media' => '',
+                    'via' => '',
+                    'image' => '',
                 ],
             ];
         }
@@ -217,7 +255,8 @@ class Likely extends Widget
      */
     protected function registerFacebookImageMeta($path, $i)
     {
-        if (file_exists($path)) {
+
+        if (file_exists($path) || (Yii::getAlias('@webroot', false) && file_exists(Yii::getAlias('@webroot') . $path))) {
             $view = $this->getView();
             $view->registerMetaTag(['property' => 'og:image', 'content' => $path]);
         } else {

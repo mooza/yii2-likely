@@ -7,8 +7,8 @@
 
 ?>
 
-<div class="likely <?= $options['colorClass'] ?> <?= $options['sizeClass'] ?>" <?= $options['url'] ?> <?= $options['title'] ?>>
+<div class="likely <?= $options['colorClass'] ?> <?= $options['sizeClass'] ?>" <?= $options['url'] ?> <?=$options['title'] ?>>
     <?php foreach ($options['items'] as $item) { ?>
-        <div class="<?= $item['class'] ?>" <?= $item['via'] ?> <?= $item['text'] ?> <?= $item['media'] ?>><?= $item['title'] ?></div>
+        <div class="<?= $item['class'] ?>" <?= $item['via'] ?> <?= $item['text'] ?> <?=$item['media'] ?>><?= $item['title'] ?></div>
     <?php } ?>
 </div>
